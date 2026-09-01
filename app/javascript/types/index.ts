@@ -3,4 +3,6 @@ export type FlashData = {
   alert?: string
 }
 
-export type SharedProps = Record<string, never>
+export type SharedProps = {
+  flash: FlashData
+}

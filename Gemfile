@@ -49,7 +49,11 @@ group :development do
 end
 
 
-gem "rspec-rails", "~> 8.0", groups: [:development, :test]
+gem "rspec-rails", "~> 8.0", groups: [ :development, :test ]
 
 gem "vite_rails", "~> 3.11"
 gem "inertia_rails", "~> 3.22"
+
+gem "devise", "~> 5.0"
+gem "omniauth-google-oauth2", "~> 1.2"
+gem "omniauth-rails_csrf_protection", "~> 2.0"

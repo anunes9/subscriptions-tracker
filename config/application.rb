@@ -38,5 +38,10 @@ module SubscriptionsTracker
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Use UUID primary keys for every model, per the data model doc (id uuid (PK) on every entity).
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
   end
 end
