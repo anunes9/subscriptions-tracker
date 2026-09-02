@@ -88,8 +88,15 @@ export default function SignIn() {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 space-y-3">
         <GoogleSignInButton />
+
+        <a
+          href="/login/passwordless"
+          className="flex w-full items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+        >
+          Email me a magic link
+        </a>
       </div>
     </AuthLayout>
   )

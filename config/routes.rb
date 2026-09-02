@@ -6,6 +6,11 @@ Rails.application.routes.draw do
   }
   root "inertia_example#index"
   get "inertia-example", to: "inertia_example#index"
+
+  get "login/passwordless", to: "passwordless_login_requests#new", as: :new_passwordless_login_request
+  post "login/passwordless", to: "passwordless_login_requests#create", as: :passwordless_login_requests
+  get "login/passwordless/verify", to: "passwordless_login_requests#show", as: :verify_passwordless_login_request
+  post "login/passwordless/verify", to: "passwordless_login_requests#verify", as: :verify_passwordless_login_request_code
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
