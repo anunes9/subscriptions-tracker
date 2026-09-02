@@ -34,6 +34,13 @@ class User < ApplicationRecord
 
   before_create :skip_confirmation!
 
+  has_many :categories, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
+  has_many :one_time_expenses, dependent: :destroy
+  has_one :household_member, dependent: :destroy
+  has_one :household, through: :household_member
+  has_one :owned_household, class_name: "Household", foreign_key: :owner_id, inverse_of: :owner, dependent: :destroy
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create! do |user|
       user.email = auth.info.email
