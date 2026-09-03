@@ -3,6 +3,7 @@ require 'rails_helper'
 # == Schema Information
 #
 # Table name: households
+# Database name: primary
 #
 #  id         :uuid             not null, primary key
 #  name       :string           not null

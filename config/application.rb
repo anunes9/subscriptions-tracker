@@ -45,5 +45,9 @@ module SubscriptionsTracker
     end
 
     config.middleware.use Rack::Attack
+
+    # Solid Queue's tables live in a second database role (config/database.yml) in
+    # every environment, not just production.
+    config.solid_queue.connects_to = { database: { writing: :queue } }
   end
 end

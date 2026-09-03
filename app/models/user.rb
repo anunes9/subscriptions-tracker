@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: users
+# Database name: primary
 #
 #  id                         :uuid             not null, primary key
 #  confirmation_sent_at       :datetime
@@ -40,6 +41,9 @@ class User < ApplicationRecord
   has_one :household_member, dependent: :destroy
   has_one :household, through: :household_member
   has_one :owned_household, class_name: "Household", foreign_key: :owner_id, inverse_of: :owner, dependent: :destroy
+
+  # EUR-only for now; USD/multi-currency support is deferred.
+  validates :home_currency, inclusion: { in: %w[EUR] }
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create! do |user|

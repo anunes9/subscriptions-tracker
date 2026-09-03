@@ -3,6 +3,7 @@ require 'rails_helper'
 # == Schema Information
 #
 # Table name: reminder_logs
+# Database name: primary
 #
 #  id              :uuid             not null, primary key
 #  channel         :string           not null

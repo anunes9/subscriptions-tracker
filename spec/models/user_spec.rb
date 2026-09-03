@@ -3,6 +3,7 @@ require "rails_helper"
 # == Schema Information
 #
 # Table name: users
+# Database name: primary
 #
 #  id                         :uuid             not null, primary key
 #  confirmation_sent_at       :datetime
@@ -43,6 +44,12 @@ RSpec.describe User, type: :model do
       user = User.create!(email: "defaults@example.com", password: "Password123!")
 
       expect(user).to be_confirmed
+    end
+
+    it "only allows EUR as the home currency for now" do
+      user = User.new(email: "usd-user@example.com", password: "Password123!", home_currency: "USD")
+
+      expect(user).not_to be_valid
     end
   end
 

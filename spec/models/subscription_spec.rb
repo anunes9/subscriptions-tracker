@@ -3,13 +3,14 @@ require 'rails_helper'
 # == Schema Information
 #
 # Table name: subscriptions
+# Database name: primary
 #
 #  id                         :uuid             not null, primary key
 #  amount_type                :string           not null
 #  billing_anchor_date        :date             not null
 #  billing_cycle              :string           not null
 #  color_override             :string
-#  currency                   :string           not null
+#  currency                   :string           default("EUR"), not null
 #  custom_reminder_lead_days  :integer
 #  icon_override              :string
 #  name                       :string           not null
@@ -42,12 +43,17 @@ require 'rails_helper'
 #  fk_rails_...  (user_id => users.id)
 #
 RSpec.describe Subscription, type: :model do
-  it "defaults to active, regular, and shared" do
+  it "defaults to active, regular, shared, and EUR" do
     subscription = create_subscription
 
     expect(subscription.status).to eq("active")
     expect(subscription.subscription_type).to eq("regular")
     expect(subscription.visibility).to eq("shared")
+    expect(subscription.currency).to eq("EUR")
+  end
+
+  it "only allows EUR for now" do
+    expect { create_subscription(currency: "USD") }.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   it "allows Fixed and Variable amount types" do

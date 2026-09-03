@@ -3,6 +3,7 @@ require 'rails_helper'
 # == Schema Information
 #
 # Table name: service_directory_entries
+# Database name: primary
 #
 #  id                  :uuid             not null, primary key
 #  brand_color         :string

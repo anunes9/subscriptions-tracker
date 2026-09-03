@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_02_211945) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_02_235158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -24,16 +24,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_02_211945) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_categories_on_user_id"
-  end
-
-  create_table "exchange_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.date "rate_date", null: false
-    t.string "from_currency", null: false
-    t.string "to_currency", null: false
-    t.decimal "rate", precision: 12, scale: 6, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["rate_date", "from_currency", "to_currency"], name: "index_exchange_rates_on_date_and_currencies", unique: true
   end
 
   create_table "history_log_entries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -72,7 +62,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_02_211945) do
     t.uuid "user_id", null: false
     t.uuid "category_id", null: false
     t.decimal "amount", precision: 12, scale: 2, null: false
-    t.string "currency", null: false
+    t.string "currency", default: "EUR", null: false
     t.date "expense_date", null: false
     t.text "note"
     t.uuid "household_id"
@@ -123,7 +113,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_02_211945) do
     t.uuid "service_directory_entry_id"
     t.uuid "category_id", null: false
     t.string "name", null: false
-    t.string "currency", null: false
+    t.string "currency", default: "EUR", null: false
     t.string "billing_cycle", null: false
     t.string "amount_type", null: false
     t.string "subscription_type", default: "regular", null: false

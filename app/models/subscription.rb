@@ -1,13 +1,14 @@
 # == Schema Information
 #
 # Table name: subscriptions
+# Database name: primary
 #
 #  id                         :uuid             not null, primary key
 #  amount_type                :string           not null
 #  billing_anchor_date        :date             not null
 #  billing_cycle              :string           not null
 #  color_override             :string
-#  currency                   :string           not null
+#  currency                   :string           default("EUR"), not null
 #  custom_reminder_lead_days  :integer
 #  icon_override              :string
 #  name                       :string           not null
@@ -47,7 +48,6 @@ class Subscription < ApplicationRecord
   has_many :history_log_entries, dependent: :destroy
   has_many :reminder_logs, dependent: :destroy
 
-  enum :currency, { eur: "EUR", usd: "USD" }
   enum :billing_cycle, { monthly: "monthly", yearly: "yearly" }
   enum :amount_type, { fixed: "fixed", variable: "variable" }
   enum :subscription_type, { regular: "regular", trial: "trial" }, default: :regular
@@ -58,4 +58,6 @@ class Subscription < ApplicationRecord
   validates :name, presence: true
   validates :billing_anchor_date, presence: true
   validates :rating, inclusion: { in: 1..5 }, allow_nil: true
+  # EUR-only for now; USD/multi-currency support is deferred.
+  validates :currency, inclusion: { in: %w[EUR] }
 end

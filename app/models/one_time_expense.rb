@@ -1,10 +1,11 @@
 # == Schema Information
 #
 # Table name: one_time_expenses
+# Database name: primary
 #
 #  id           :uuid             not null, primary key
 #  amount       :decimal(12, 2)   not null
-#  currency     :string           not null
+#  currency     :string           default("EUR"), not null
 #  expense_date :date             not null
 #  note         :text
 #  visibility   :string           default("shared"), not null
@@ -31,9 +32,10 @@ class OneTimeExpense < ApplicationRecord
   belongs_to :category
   belongs_to :household, optional: true
 
-  enum :currency, { eur: "EUR", usd: "USD" }
   enum :visibility, { private_visibility: "private", shared: "shared" }, default: :shared
 
   validates :amount, presence: true
   validates :expense_date, presence: true
+  # EUR-only for now; USD/multi-currency support is deferred.
+  validates :currency, inclusion: { in: %w[EUR] }
 end

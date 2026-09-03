@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: history_log_entries
+# Database name: primary
 #
 #  id              :uuid             not null, primary key
 #  amount          :decimal(12, 2)   not null

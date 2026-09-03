@@ -3,6 +3,7 @@ require 'rails_helper'
 # == Schema Information
 #
 # Table name: categories
+# Database name: primary
 #
 #  id         :uuid             not null, primary key
 #  color      :string

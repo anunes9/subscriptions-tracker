@@ -3,6 +3,7 @@ require 'rails_helper'
 # == Schema Information
 #
 # Table name: passwordless_login_requests
+# Database name: primary
 #
 #  id         :uuid             not null, primary key
 #  code_hash  :string           not null
