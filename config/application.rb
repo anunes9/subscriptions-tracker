@@ -49,5 +49,12 @@ module SubscriptionsTracker
     # Solid Queue's tables live in a second database role (config/database.yml) in
     # every environment, not just production.
     config.solid_queue.connects_to = { database: { writing: :queue } }
+
+    # schema.rb (Ruby format) can't represent Row-Level Security policies — its
+    # dumper only understands tables/columns/indexes/foreign keys, so `db:schema:load`
+    # (used for test-DB setup and fresh deploys) would silently create the
+    # subscriptions table without RLS at all. SQL format dumps via pg_dump instead,
+    # capturing every raw SQL statement a migration ran.
+    config.active_record.schema_format = :sql
   end
 end
