@@ -53,3 +53,73 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
+  test:
+    runs-on: ubuntu-latest
+
+    # The app connects as a non-superuser Postgres role in every environment
+    # (see config/database.yml and README#row-level-security) because Postgres
+    # superusers bypass Row-Level Security regardless of policy. If CI ran as
+    # the default `postgres` superuser, the RLS specs would pass without
+    # actually proving anything, so we create a matching role below instead of
+    # relying on the service container's default user.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_HOST: localhost
+      LOCAL_DATABASE_PASSWORD: subscriptions_tracker_dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Create application Postgres role
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -c \
+            "CREATE ROLE subscriptions_tracker WITH LOGIN CREATEDB PASSWORD 'subscriptions_tracker_dev';"
+
+      - name: Set up test databases
+        run: bin/rails db:create db:schema:load
+
+      - name: Check for pending/out-of-order migrations
+        run: bin/rails db:migrate:status db:abort_if_pending_migrations
+
+      - name: Run tests
+        run: bundle exec rspec
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
