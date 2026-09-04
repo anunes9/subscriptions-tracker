@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  post "billing/checkout", to: "billing#checkout", as: :billing_checkout
+  post "billing/webhook", to: "billing#webhook", as: :billing_webhook
+
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
   devise_for :users, controllers: {

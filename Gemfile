@@ -69,3 +69,5 @@ gem "letter_opener", "~> 1.10", group: :development
 gem "letter_opener_web", "~> 3.0", group: :development
 
 gem "solid_queue", "~> 1.7"
+
+gem "stripe", "~> 19.6"
