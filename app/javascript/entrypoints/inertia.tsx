@@ -1,6 +1,9 @@
 import { createInertiaApp } from '@inertiajs/react'
 
 import './application.css'
+import { initObservability } from '~/lib/observability'
+
+initObservability()
 
 void createInertiaApp({
   pages: '../pages',

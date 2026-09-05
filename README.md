@@ -62,6 +62,14 @@ bundle exec rspec
 bundle exec rubocop
 ```
 
+## Observability
+
+Product analytics via [PostHog](https://posthog.com), initialized in
+`app/javascript/entrypoints/inertia.tsx` via
+`app/javascript/lib/observability.ts` (autocapture/pageviews). Reads its keys
+from Vite env vars (`VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`) and no-ops when
+unset — copy `.env.example` to `.env` and fill them in to enable locally.
+
 ## Row-Level Security
 
 The `subscriptions` table enforces Row-Level Security at the Postgres level
