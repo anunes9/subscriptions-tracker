@@ -24,6 +24,18 @@ node_modules/
 # Vite Ruby
 /public/vite*
 node_modules
+
+# vite-plugin-pwa build output — production is configured with an empty
+# `publicOutputDir` (see config/vite.json) so the service worker is served
+# from site root and can control the whole app's scope, which means these
+# land directly under /public instead of /public/vite.
+/public/.vite
+/public/manifest.webmanifest
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
+/public/registerSW.js
 # Vite uses dotenv and suggests to ignore local-only env files. See
 # https://vitejs.dev/guide/env-and-mode.html#env-files
 *.local

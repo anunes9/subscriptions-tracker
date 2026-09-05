@@ -1,28 +1,20 @@
-// To see this message, add the following to the `<head>` section in your
-// views/layouts/application.html.erb
-//
-//    <%= vite_client_tag %>
-//    <%= vite_javascript_tag 'application' %>
-console.log('Vite ⚡️ Rails')
+import { registerSW } from 'virtual:pwa-register'
 
-// If using a TypeScript entrypoint file:
-//     <%= vite_typescript_tag 'application' %>
+// Registered on every page (this entrypoint is loaded from the shared
+// layout), so the app shell is installable/offline-capable regardless of
+// whether the page renders through Inertia.
 //
-// If you want to use .jsx or .tsx, add the extension:
-//     <%= vite_javascript_tag 'application.jsx' %>
-
-console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify.app/guide/rails')
-
-// Example: Load Rails libraries in Vite.
+// Production only: in development the service worker's scope would be
+// stuck under /vite-dev/ (Vite Ruby's dev build output dir, see
+// config/vite.json), and registering it there just adds a confusing caching
+// layer on top of local development without ever covering the whole app.
 //
-// import * as Turbo from '@hotwired/turbo'
-// Turbo.start()
-//
-// import ActiveStorage from '@rails/activestorage'
-// ActiveStorage.start()
-//
-// // Import all channels.
-// const channels = import.meta.glob('./**/*_channel.js', { eager: true })
-
-// Example: Import a stylesheet in app/frontend/index.css
-// import '~/index.css'
+// Note: Vite Ruby always runs the `build` command (never a `vite dev`
+// server) to produce assets for every Rails environment, so `import.meta.
+// env.PROD`/`DEV` — which reflect the *command*, not the mode — are always
+// `true`/`false` here regardless of RAILS_ENV. `MODE` tracks the Rails
+// environment correctly (vite_ruby passes it via `--mode`), so check that
+// instead.
+if (import.meta.env.MODE === 'production') {
+  registerSW({ immediate: true })
+}
