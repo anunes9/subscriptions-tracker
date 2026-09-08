@@ -23,6 +23,9 @@ export default function AppLayout({ title, children }: AppLayoutProps) {
             <Link href="/subscriptions" className="hover:text-slate-900">
               Subscriptions
             </Link>
+            <Link href="/month_view" className="hover:text-slate-900">
+              Month View
+            </Link>
             <Link href="/categories" className="hover:text-slate-900">
               Categories
             </Link>

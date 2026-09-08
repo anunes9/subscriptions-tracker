@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   root "inertia_example#index"
   get "inertia-example", to: "inertia_example#index"
 
+  get "month_view", to: "month_view#show", as: :month_view
+
   get "onboarding", to: "onboarding#show", as: :onboarding
   post "onboarding", to: "onboarding#create"
   post "onboarding/skip", to: "onboarding#skip", as: :skip_onboarding
