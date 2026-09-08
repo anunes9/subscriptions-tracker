@@ -106,4 +106,17 @@ class Subscription < ApplicationRecord
       )
     end
   end
+
+  # Normalizes an amount to its monthly-equivalent cost (PRD 4.3): yearly
+  # subscriptions divide by 12 so they can be combined with monthly ones
+  # into a single total; monthly amounts are already there. Takes the
+  # amount as an argument rather than resolving it itself, since callers
+  # already have it (e.g. from ensure_current_period_logged!) and a pure
+  # calculation is simpler to test and reuse than one with a DB-writing
+  # side effect baked in.
+  def monthly_equivalent(amount)
+    return nil unless amount
+
+    yearly? ? (amount / 12) : amount
+  end
 end

@@ -104,6 +104,26 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "#monthly_equivalent" do
+    it "returns the amount as-is for monthly subscriptions" do
+      subscription = create_subscription(billing_cycle: "monthly")
+
+      expect(subscription.monthly_equivalent(12)).to eq(12)
+    end
+
+    it "divides by 12 for yearly subscriptions" do
+      subscription = create_subscription(billing_cycle: "yearly")
+
+      expect(subscription.monthly_equivalent(120)).to eq(10)
+    end
+
+    it "returns nil when there's no amount to normalize" do
+      subscription = create_subscription
+
+      expect(subscription.monthly_equivalent(nil)).to be_nil
+    end
+  end
+
   describe "#ensure_current_period_logged!" do
     it "returns the existing entry when the current period is already logged" do
       subscription = create_subscription

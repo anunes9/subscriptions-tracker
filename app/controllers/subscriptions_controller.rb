@@ -103,6 +103,7 @@ class SubscriptionsController < AuthenticatedController
     current_entry = subscription.ensure_current_period_logged!
     json["current_amount"] = current_entry&.amount
     json["current_amount_estimated"] = current_entry&.is_estimated || false
+    json["monthly_equivalent_amount"] = subscription.monthly_equivalent(current_entry&.amount)
     json["category"] = subscription.category.as_json(only: [ :id, :name, :color, :icon ])
 
     if detailed

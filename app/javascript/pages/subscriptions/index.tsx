@@ -51,10 +51,15 @@ export default function SubscriptionsIndex({ subscriptions }: IndexSubscriptions
               </Link>
 
               <div className="ml-4 flex shrink-0 items-center gap-4 text-sm">
-                <span className="font-semibold text-slate-900">
-                  {subscription.current_amount
-                    ? `${subscription.current_amount_estimated ? '~' : ''}€${subscription.current_amount}`
-                    : '—'}
+                <span className="text-right">
+                  <span className="block font-semibold text-slate-900">
+                    {subscription.current_amount
+                      ? `${subscription.current_amount_estimated ? '~' : ''}€${subscription.current_amount}`
+                      : '—'}
+                  </span>
+                  {subscription.billing_cycle === 'yearly' && subscription.monthly_equivalent_amount && (
+                    <span className="block text-xs text-slate-400">≈€{subscription.monthly_equivalent_amount}/mo</span>
+                  )}
                 </span>
                 <button
                   type="button"
