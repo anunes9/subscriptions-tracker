@@ -93,4 +93,52 @@ RSpec.describe Subscription, type: :model do
       expect(subscription.current_period).to eq("2026-03-15")
     end
   end
+
+  describe "#latest_history_entry" do
+    it "returns the most recently logged period, not the most recently created row" do
+      subscription = create_subscription
+      latest = subscription.history_log_entries.create!(period: "2026-02", amount: 7, currency: "EUR")
+      subscription.history_log_entries.create!(period: "2026-01", amount: 5, currency: "EUR")
+
+      expect(subscription.latest_history_entry).to eq(latest)
+    end
+  end
+
+  describe "#ensure_current_period_logged!" do
+    it "returns the existing entry when the current period is already logged" do
+      subscription = create_subscription
+      entry = subscription.history_log_entries.create!(period: subscription.current_period, amount: 9.99, currency: "EUR")
+
+      expect(subscription.ensure_current_period_logged!).to eq(entry)
+    end
+
+    it "returns nil when there's no history to carry forward from" do
+      subscription = create_subscription
+
+      expect(subscription.ensure_current_period_logged!).to be_nil
+    end
+
+    it "carries the last amount forward as a confirmed actual for Fixed subscriptions" do
+      subscription = create_subscription(amount_type: "fixed")
+      subscription.history_log_entries.create!(period: "2020-01", amount: 9.99, currency: "EUR", confirmed_at: Time.current)
+
+      entry = subscription.ensure_current_period_logged!
+
+      expect(entry.period).to eq(subscription.current_period)
+      expect(entry.amount).to eq(9.99)
+      expect(entry.is_estimated).to be false
+      expect(entry.confirmed_at).to be_present
+    end
+
+    it "carries the last amount forward as an unconfirmed estimate for Variable subscriptions" do
+      subscription = create_subscription(amount_type: "variable")
+      subscription.history_log_entries.create!(period: "2020-01", amount: 9.99, currency: "EUR", confirmed_at: Time.current)
+
+      entry = subscription.ensure_current_period_logged!
+
+      expect(entry.amount).to eq(9.99)
+      expect(entry.is_estimated).to be true
+      expect(entry.confirmed_at).to be_nil
+    end
+  end
 end

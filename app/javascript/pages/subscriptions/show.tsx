@@ -23,11 +23,16 @@ export default function ShowSubscription({ subscription }: ShowSubscriptionPageP
             <div>
               <p className="text-sm font-medium text-slate-500">{subscription.category.name}</p>
               <p className="mt-1 text-2xl font-bold text-slate-900">
-                {subscription.current_amount ? `€${subscription.current_amount}` : 'No amount recorded yet'}
+                {subscription.current_amount
+                  ? `${subscription.current_amount_estimated ? '~' : ''}€${subscription.current_amount}`
+                  : 'No amount recorded yet'}
                 <span className="ml-1 text-sm font-normal text-slate-500">
                   / {subscription.billing_cycle === 'monthly' ? 'month' : 'year'}
                 </span>
               </p>
+              {subscription.current_amount_estimated && (
+                <p className="mt-1 text-xs font-medium text-amber-700">Estimated — not yet confirmed this period</p>
+              )}
             </div>
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
               {STATUS_LABEL[subscription.status]}

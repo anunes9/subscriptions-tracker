@@ -52,7 +52,9 @@ export default function SubscriptionsIndex({ subscriptions }: IndexSubscriptions
 
               <div className="ml-4 flex shrink-0 items-center gap-4 text-sm">
                 <span className="font-semibold text-slate-900">
-                  {subscription.current_amount ? `€${subscription.current_amount}` : '—'}
+                  {subscription.current_amount
+                    ? `${subscription.current_amount_estimated ? '~' : ''}€${subscription.current_amount}`
+                    : '—'}
                 </span>
                 <button
                   type="button"

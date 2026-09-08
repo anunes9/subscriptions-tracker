@@ -106,6 +106,23 @@ RSpec.describe "Subscriptions", type: :request do
 
       expect(subscription.reload.history_log_entries).to be_empty
     end
+
+    it "backfills the current period via carry-forward, under the OLD type's confirmation semantics, before switching amount_type" do
+      sign_in user
+      subscription = create_subscription(user: user, category: category, amount_type: "fixed")
+      subscription.history_log_entries.create!(period: "2020-01", amount: 9.99, currency: "EUR", confirmed_at: Time.current)
+
+      patch "/subscriptions/#{subscription.id}", params: { subscription: { amount_type: "variable" } }
+
+      entries = subscription.history_log_entries.order(:period)
+      expect(entries.size).to eq(2)
+      backfilled = entries.last
+      expect(backfilled.period).to eq(subscription.current_period)
+      expect(backfilled.amount).to eq(9.99)
+      expect(backfilled.is_estimated).to be false
+      expect(backfilled.confirmed_at).to be_present
+      expect(subscription.reload.amount_type).to eq("variable")
+    end
   end
 
   describe "DELETE /subscriptions/:id" do

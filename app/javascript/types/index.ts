@@ -39,6 +39,7 @@ export type Subscription = {
   category_id: string
   service_directory_entry_id: string | null
   current_amount: string | null
+  current_amount_estimated: boolean
   category: { id: string; name: string; color: string | null; icon: string | null }
   cancellation_url?: string | null
 }

@@ -38,6 +38,14 @@ class SubscriptionsController < AuthenticatedController
 
   def update
     amount = params.dig(:subscription, :amount)
+    new_amount_type = subscription_params[:amount_type]
+
+    # Lock in the current period under the *old* amount_type before it
+    # changes, so switching Fixed<->Variable never loses/backdates history
+    # (PRD 4.1.1: "past periods already in the log stay as-is").
+    if new_amount_type.present? && new_amount_type != @subscription.amount_type
+      @subscription.ensure_current_period_logged!
+    end
 
     if @subscription.update(subscription_params)
       upsert_current_period_amount!(@subscription, amount) if amount.present?
@@ -92,7 +100,9 @@ class SubscriptionsController < AuthenticatedController
       :billing_anchor_date, :trial_end_date, :rating, :tag, :icon_override, :color_override,
       :notes, :category_id, :service_directory_entry_id
     ])
-    json["current_amount"] = subscription.history_log_entries.max_by(&:period)&.amount
+    current_entry = subscription.ensure_current_period_logged!
+    json["current_amount"] = current_entry&.amount
+    json["current_amount_estimated"] = current_entry&.is_estimated || false
     json["category"] = subscription.category.as_json(only: [ :id, :name, :color, :icon ])
 
     if detailed

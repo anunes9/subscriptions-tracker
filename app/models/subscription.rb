@@ -63,10 +63,47 @@ class Subscription < ApplicationRecord
 
   # The history log's period key for the period the subscription is currently
   # in (PRD 4.1.1 / data model 2.5) — monthly cycles log by calendar month,
-  # yearly cycles log by the exact anchor date. Ticket 1.4 builds the
-  # recurring rollover/estimate engine on top of this; for now it's what lets
-  # add/edit record the period's amount at all.
+  # yearly cycles log by the exact anchor date.
   def current_period
     monthly? ? Date.current.strftime("%Y-%m") : billing_anchor_date.to_s
+  end
+
+  # The most recently logged period, whichever came first — the carry-
+  # forward source for both the Variable estimate and the Fixed auto-log
+  # (PRD 4.1.1: "carried forward from the last known period, whether that
+  # period was itself Fixed or Variable").
+  def latest_history_entry
+    history_log_entries.order(period: :desc).first
+  end
+
+  # Ensures the current period has a log entry, so "what did I spend this
+  # period" always has an answer even before the user has touched anything
+  # this period. A recurring job will eventually call this proactively as
+  # each period rolls over (Phase 2's PeriodRolloverJob); for now it runs
+  # reactively whenever a subscription is read (see SubscriptionsController).
+  #
+  # Fixed subscriptions log the carried-forward amount as a confirmed
+  # actual — the fixed price *is* this period's charge by definition, with
+  # no user confirmation step (PRD: "invisible to the user in normal use").
+  # Variable subscriptions log it as an unconfirmed estimate, since only the
+  # user confirming/editing it makes it an actual.
+  #
+  # Returns nil if there's nothing to carry forward from yet (a subscription
+  # with no history at all — shouldn't happen once ticket 1.3's add flow has
+  # run, but a subscription created without an initial amount is possible
+  # via edits that never set one).
+  def ensure_current_period_logged!
+    history_log_entries.find_by(period: current_period) || begin
+      carry_forward = latest_history_entry
+      return nil unless carry_forward
+
+      history_log_entries.create!(
+        period: current_period,
+        amount: carry_forward.amount,
+        currency: currency,
+        is_estimated: variable?,
+        confirmed_at: variable? ? nil : Time.current
+      )
+    end
   end
 end
