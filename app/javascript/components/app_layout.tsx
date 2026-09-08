@@ -20,6 +20,9 @@ export default function AppLayout({ title, children }: AppLayoutProps) {
             Renewly
           </Link>
           <nav className="flex items-center gap-4 text-sm font-medium text-slate-600">
+            <Link href="/subscriptions" className="hover:text-slate-900">
+              Subscriptions
+            </Link>
             <Link href="/categories" className="hover:text-slate-900">
               Categories
             </Link>

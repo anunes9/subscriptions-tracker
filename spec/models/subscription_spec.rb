@@ -79,4 +79,18 @@ RSpec.describe Subscription, type: :model do
     expect(subscription.service_directory_entry).to be_nil
     expect(subscription.household).to be_nil
   end
+
+  describe "#current_period" do
+    it "is the calendar month for monthly subscriptions" do
+      subscription = create_subscription(billing_cycle: "monthly")
+
+      expect(subscription.current_period).to eq(Date.current.strftime("%Y-%m"))
+    end
+
+    it "is the exact billing anchor date for yearly subscriptions" do
+      subscription = create_subscription(billing_cycle: "yearly", billing_anchor_date: Date.new(2026, 3, 15))
+
+      expect(subscription.current_period).to eq("2026-03-15")
+    end
+  end
 end

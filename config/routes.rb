@@ -14,6 +14,11 @@ Rails.application.routes.draw do
 
   resources :categories, only: [ :index, :create, :update, :destroy ]
   resources :service_directory_entries, only: [ :index ]
+  resources :subscriptions do
+    member do
+      post :duplicate
+    end
+  end
 
   get "login/passwordless", to: "passwordless_login_requests#new", as: :new_passwordless_login_request
   post "login/passwordless", to: "passwordless_login_requests#create", as: :passwordless_login_requests

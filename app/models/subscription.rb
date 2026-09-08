@@ -60,4 +60,13 @@ class Subscription < ApplicationRecord
   validates :rating, inclusion: { in: 1..5 }, allow_nil: true
   # EUR-only for now; USD/multi-currency support is deferred.
   validates :currency, inclusion: { in: %w[EUR] }
+
+  # The history log's period key for the period the subscription is currently
+  # in (PRD 4.1.1 / data model 2.5) — monthly cycles log by calendar month,
+  # yearly cycles log by the exact anchor date. Ticket 1.4 builds the
+  # recurring rollover/estimate engine on top of this; for now it's what lets
+  # add/edit record the period's amount at all.
+  def current_period
+    monthly? ? Date.current.strftime("%Y-%m") : billing_anchor_date.to_s
+  end
 end
