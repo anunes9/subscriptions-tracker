@@ -26,4 +26,6 @@ class ServiceDirectoryEntry < ApplicationRecord
   has_many :subscriptions
 
   validates :name, :icon_asset, :region, presence: true
+
+  scope :search, ->(query) { query.present? ? where("name ILIKE ?", "%#{sanitize_sql_like(query)}%") : none }
 end

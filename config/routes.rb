@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "inertia-example", to: "inertia_example#index"
 
   resources :categories, only: [ :index, :create, :update, :destroy ]
+  resources :service_directory_entries, only: [ :index ]
 
   get "login/passwordless", to: "passwordless_login_requests#new", as: :new_passwordless_login_request
   post "login/passwordless", to: "passwordless_login_requests#create", as: :passwordless_login_requests

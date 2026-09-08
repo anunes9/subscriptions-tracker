@@ -36,4 +36,29 @@ RSpec.describe ServiceDirectoryEntry, type: :model do
 
     expect(entry.default_category).to eq(category)
   end
+
+  describe ".search" do
+    it "matches case-insensitively on a partial name" do
+      category = create_category
+      netflix = ServiceDirectoryEntry.create!(name: "Netflix", icon_asset: "netflix.svg", default_category: category)
+      ServiceDirectoryEntry.create!(name: "Spotify", icon_asset: "spotify.svg", default_category: category)
+
+      expect(ServiceDirectoryEntry.search("net")).to contain_exactly(netflix)
+      expect(ServiceDirectoryEntry.search("FLIX")).to contain_exactly(netflix)
+    end
+
+    it "returns none for a blank query rather than every entry" do
+      ServiceDirectoryEntry.create!(name: "Netflix", icon_asset: "netflix.svg", default_category: create_category)
+
+      expect(ServiceDirectoryEntry.search(nil)).to be_empty
+      expect(ServiceDirectoryEntry.search("")).to be_empty
+    end
+
+    it "escapes SQL LIKE wildcards in the query" do
+      category = create_category
+      ServiceDirectoryEntry.create!(name: "Netflix", icon_asset: "netflix.svg", default_category: category)
+
+      expect(ServiceDirectoryEntry.search("%")).to be_empty
+    end
+  end
 end
