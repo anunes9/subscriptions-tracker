@@ -9,8 +9,7 @@ Rails.application.routes.draw do
     registrations: "users/registrations",
     sessions: "users/sessions"
   }
-  root "inertia_example#index"
-  get "inertia-example", to: "inertia_example#index"
+  root "dashboard#show"
 
   get "month_view", to: "month_view#show", as: :month_view
 

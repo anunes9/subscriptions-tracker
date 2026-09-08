@@ -134,4 +134,30 @@ class Subscription < ApplicationRecord
 
     yearly? ? (amount / 12) : amount
   end
+
+  # The next date this subscription renews on or after +from+ — powers
+  # "upcoming renewals" (PRD 4.7/4.8). Monthly cycles use the anchor's
+  # day-of-month each month; yearly cycles use its month+day each year.
+  # Both clamp to the last day of a shorter month, same as Month View
+  # (a subscription anchored on the 31st still renews in February).
+  def next_renewal_date(from: Date.current)
+    if monthly?
+      candidate = clamp_to_month(from.year, from.month, billing_anchor_date.day)
+      return candidate if candidate >= from
+
+      clamp_to_month(from.next_month.year, from.next_month.month, billing_anchor_date.day)
+    else
+      candidate = clamp_to_month(from.year, billing_anchor_date.month, billing_anchor_date.day)
+      return candidate if candidate >= from
+
+      clamp_to_month(from.year + 1, billing_anchor_date.month, billing_anchor_date.day)
+    end
+  end
+
+  private
+
+  def clamp_to_month(year, month, day)
+    last_day = Date.new(year, month, -1).day
+    Date.new(year, month, [ day, last_day ].min)
+  end
 end

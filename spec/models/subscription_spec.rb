@@ -148,6 +148,38 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "#next_renewal_date" do
+    it "returns this month's occurrence for a monthly subscription when it hasn't passed yet" do
+      subscription = create_subscription(billing_cycle: "monthly", billing_anchor_date: Date.new(2026, 1, 20))
+
+      expect(subscription.next_renewal_date(from: Date.new(2026, 1, 10))).to eq(Date.new(2026, 1, 20))
+    end
+
+    it "rolls over to next month for a monthly subscription once this month's date has passed" do
+      subscription = create_subscription(billing_cycle: "monthly", billing_anchor_date: Date.new(2026, 1, 20))
+
+      expect(subscription.next_renewal_date(from: Date.new(2026, 1, 21))).to eq(Date.new(2026, 2, 20))
+    end
+
+    it "clamps to the last day of a shorter month" do
+      subscription = create_subscription(billing_cycle: "monthly", billing_anchor_date: Date.new(2026, 1, 31))
+
+      expect(subscription.next_renewal_date(from: Date.new(2026, 2, 1))).to eq(Date.new(2026, 2, 28))
+    end
+
+    it "returns this year's occurrence for a yearly subscription when it hasn't passed yet" do
+      subscription = create_subscription(billing_cycle: "yearly", billing_anchor_date: Date.new(2020, 6, 15))
+
+      expect(subscription.next_renewal_date(from: Date.new(2026, 1, 1))).to eq(Date.new(2026, 6, 15))
+    end
+
+    it "rolls over to next year for a yearly subscription once this year's date has passed" do
+      subscription = create_subscription(billing_cycle: "yearly", billing_anchor_date: Date.new(2020, 6, 15))
+
+      expect(subscription.next_renewal_date(from: Date.new(2026, 7, 1))).to eq(Date.new(2027, 6, 15))
+    end
+  end
+
   describe "#ensure_current_period_logged!" do
     it "returns the existing entry when the current period is already logged" do
       subscription = create_subscription
