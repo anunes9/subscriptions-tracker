@@ -71,3 +71,9 @@ gem "letter_opener_web", "~> 3.0", group: :development
 gem "solid_queue", "~> 1.7"
 
 gem "stripe", "~> 19.6"
+
+# Loads .env in development/test so vars like DATABASE_HOST apply to any
+# bin/rails command, not just bin/dev (Foreman has its own built-in .env
+# support, which is why this wasn't needed before). Never in production —
+# real deploys set env vars through the platform, not a checked-in file.
+gem "dotenv-rails", "~> 3.1", group: [ :development, :test ]

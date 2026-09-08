@@ -39,8 +39,11 @@ if you ever want a clean slate.
 psql -d postgres -c "CREATE ROLE subscriptions_tracker WITH LOGIN CREATEDB PASSWORD 'subscriptions_tracker_dev';"
 ```
 
-Either way, the password can be overridden via `LOCAL_DATABASE_PASSWORD` (see
-`config/database.yml`) if you'd rather not use the default.
+Either way, the password (and `DATABASE_HOST`/`DATABASE_PORT`, if your setup
+needs different ones) can be overridden via env vars — copy `.env.example` to
+`.env` and adjust as needed. `dotenv-rails` loads it automatically in
+development/test for any `bin/rails` command, not just `bin/dev` (which has
+its own separate, built-in `.env` support via Foreman).
 
 ### 2. Install dependencies
 
