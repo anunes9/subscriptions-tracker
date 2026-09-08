@@ -12,7 +12,7 @@ planning docs this app is built from:
 
 ## Setup
 
-### 1. Postgres role
+### 1. Postgres
 
 The app connects as a **non-superuser** Postgres role in every environment
 (including development/test), matching production and — critically — so that
@@ -21,13 +21,25 @@ Postgres superusers always bypass RLS regardless of policy, so connecting as
 a superuser (e.g. the default `postgres`/`root` role) would silently make RLS
 a no-op.
 
-Create the role once per machine:
+**Option A — Docker (recommended):**
+
+```bash
+docker compose up -d
+```
+
+`docker-compose.yml` brings up Postgres 16 and, on first boot, runs
+`docker/postgres/init.sql` to create the non-superuser `subscriptions_tracker`
+role and the four databases below — no manual `psql` step needed. Data
+persists in a named volume across restarts; `docker compose down -v` wipes it
+if you ever want a clean slate.
+
+**Option B — a Postgres already installed locally:**
 
 ```bash
 psql -d postgres -c "CREATE ROLE subscriptions_tracker WITH LOGIN CREATEDB PASSWORD 'subscriptions_tracker_dev';"
 ```
 
-The password can be overridden via `LOCAL_DATABASE_PASSWORD` (see
+Either way, the password can be overridden via `LOCAL_DATABASE_PASSWORD` (see
 `config/database.yml`) if you'd rather not use the default.
 
 ### 2. Install dependencies
@@ -43,6 +55,9 @@ npm install
 bin/rails db:create db:schema:load
 RAILS_ENV=test bin/rails db:create db:schema:load
 ```
+
+(With the Docker option, the databases already exist — `db:create` just
+no-ops — so this step is really only loading `db/structure.sql` into them.)
 
 This creates four databases per environment set (`_development`/`_test` and
 their `_queue` counterparts — Solid Queue's tables live in a separate database

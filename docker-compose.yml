@@ -1,0 +1,31 @@
+# Local-development-only Postgres — not used in production (see Dockerfile /
+# railway.json for that). Brings up a database matching config/database.yml
+# exactly, including the non-superuser `subscriptions_tracker` role Row-Level
+# Security depends on (see README.md#row-level-security), so `bin/rails
+# db:schema:load` works immediately with no manual `psql`/`CREATE ROLE` step.
+#
+# Usage:
+#   docker compose up -d
+#   bin/rails db:schema:load
+#   RAILS_ENV=test bin/rails db:schema:load
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
