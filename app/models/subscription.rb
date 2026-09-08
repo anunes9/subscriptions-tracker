@@ -107,6 +107,21 @@ class Subscription < ApplicationRecord
     end
   end
 
+  # Records what the user says this period's amount is — the shared log
+  # every subscription maintains regardless of Fixed/Variable (PRD 4.1.1).
+  # Used wherever a user directly supplies an amount (add/edit,
+  # SubscriptionsController; onboarding, OnboardingController) — always a
+  # confirmed actual, never an estimate, since the user just typed it.
+  def confirm_amount!(amount)
+    entry = history_log_entries.find_or_initialize_by(period: current_period)
+    entry.amount = amount
+    entry.currency = currency
+    entry.is_estimated = false
+    entry.confirmed_at = Time.current
+    entry.save!
+    entry
+  end
+
   # Normalizes an amount to its monthly-equivalent cost (PRD 4.3): yearly
   # subscriptions divide by 12 so they can be combined with monthly ones
   # into a single total; monthly amounts are already there. Takes the

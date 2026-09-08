@@ -104,6 +104,30 @@ RSpec.describe Subscription, type: :model do
     end
   end
 
+  describe "#confirm_amount!" do
+    it "creates a confirmed actual for the current period when none exists" do
+      subscription = create_subscription
+
+      entry = subscription.confirm_amount!(9.99)
+
+      expect(entry.period).to eq(subscription.current_period)
+      expect(entry.amount).to eq(9.99)
+      expect(entry.is_estimated).to be false
+      expect(entry.confirmed_at).to be_present
+    end
+
+    it "overwrites an existing (e.g. estimated) entry for the current period" do
+      subscription = create_subscription(amount_type: "variable")
+      subscription.history_log_entries.create!(period: subscription.current_period, amount: 5, currency: "EUR", is_estimated: true)
+
+      subscription.confirm_amount!(7.5)
+
+      entry = subscription.history_log_entries.sole
+      expect(entry.amount).to eq(7.5)
+      expect(entry.is_estimated).to be false
+    end
+  end
+
   describe "#monthly_equivalent" do
     it "returns the amount as-is for monthly subscriptions" do
       subscription = create_subscription(billing_cycle: "monthly")

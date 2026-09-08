@@ -12,6 +12,7 @@
 #  encrypted_password         :string           default(""), not null
 #  home_currency              :string           default("EUR"), not null
 #  is_premium                 :boolean          default(FALSE), not null
+#  onboarded_at               :datetime
 #  premium_since              :datetime
 #  provider                   :string
 #  remember_created_at        :datetime

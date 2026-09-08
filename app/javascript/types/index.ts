@@ -50,7 +50,8 @@ export type ServiceDirectoryEntry = {
   name: string
   icon_asset: string
   brand_color: string | null
-  cancellation_url: string | null
-  region: string
+  cancellation_url?: string | null
+  region?: string
   default_category_id: string
+  default_category_name?: string
 }

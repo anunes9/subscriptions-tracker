@@ -21,7 +21,7 @@ class SubscriptionsController < AuthenticatedController
     subscription.errors.add(:amount, "can't be blank") if amount.blank?
 
     if subscription.errors.empty? && subscription.save
-      upsert_current_period_amount!(subscription, amount)
+      subscription.confirm_amount!(amount)
       redirect_to subscriptions_path, notice: "Subscription added.", status: :see_other
     else
       render inertia: "subscriptions/new", props: form_props.merge(errors: subscription.errors.to_hash(true))
@@ -48,7 +48,7 @@ class SubscriptionsController < AuthenticatedController
     end
 
     if @subscription.update(subscription_params)
-      upsert_current_period_amount!(@subscription, amount) if amount.present?
+      @subscription.confirm_amount!(amount) if amount.present?
       redirect_to subscriptions_path, notice: "Subscription updated.", status: :see_other
     else
       render inertia: "subscriptions/edit", props: form_props.merge(
@@ -111,18 +111,5 @@ class SubscriptionsController < AuthenticatedController
     end
 
     json
-  end
-
-  # Records what the user says this period's amount is — the shared log
-  # every subscription maintains regardless of Fixed/Variable (PRD 4.1.1).
-  # Ticket 1.4 builds the carry-forward-estimate/confirm engine on top of
-  # this; add/edit only ever touch the current period's own entry.
-  def upsert_current_period_amount!(subscription, amount)
-    entry = subscription.history_log_entries.find_or_initialize_by(period: subscription.current_period)
-    entry.amount = amount
-    entry.currency = subscription.currency
-    entry.is_estimated = false
-    entry.confirmed_at = Time.current
-    entry.save!
   end
 end

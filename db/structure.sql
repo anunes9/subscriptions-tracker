@@ -230,7 +230,8 @@ CREATE TABLE public.users (
     provider character varying,
     uid character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    onboarded_at timestamp(6) without time zone
 );
 
 
@@ -602,6 +603,7 @@ CREATE POLICY subscriptions_owner_access ON public.subscriptions USING ((user_id
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260908100000'),
 ('20260903202128'),
 ('20260902235158'),
 ('20260902234844'),

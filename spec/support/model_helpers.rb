@@ -1,6 +1,9 @@
 module ModelHelpers
-  def create_user(email: "user-#{SecureRandom.hex(4)}@example.com")
-    User.create!(email: email, password: "Password123!")
+  # Already onboarded by default, since most specs are testing something
+  # other than the onboarding redirect (see AuthenticatedController) — pass
+  # onboarded_at: nil explicitly for specs that need a brand-new user.
+  def create_user(email: "user-#{SecureRandom.hex(4)}@example.com", onboarded_at: Time.current)
+    User.create!(email: email, password: "Password123!", onboarded_at: onboarded_at)
   end
 
   def create_category(name: "Streaming & Entertainment #{SecureRandom.hex(4)}", **attrs)
