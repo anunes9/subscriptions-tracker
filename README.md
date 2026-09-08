@@ -1,8 +1,14 @@
 # Renewly
 
-Subscription tracker — Rails 7.2 + Inertia.js + React, per `docs/` (architecture,
-data model, PRD, scaffolding plan) if present, or the companion planning docs
-this repo was scaffolded from.
+Subscription tracker — Rails 7.2 + Inertia.js + React. See `docs/` for the
+planning docs this app is built from:
+
+- [`docs/prd.md`](docs/prd.md) — product requirements
+- [`docs/architecture.md`](docs/architecture.md) — technical architecture
+- [`docs/data-model.md`](docs/data-model.md) — entities and relationships
+- [`docs/mvp-scope.md`](docs/mvp-scope.md) — build phases and launch scope
+- [`docs/phase-0-tickets.md`](docs/phase-0-tickets.md) — Foundation phase, ticket by ticket
+- [`docs/phase-1-tickets.md`](docs/phase-1-tickets.md) — Core Subscription Loop phase, ticket by ticket
 
 ## Setup
 
