@@ -23,6 +23,7 @@ default: &default
   username: subscriptions_tracker
   password: <%= ENV.fetch("LOCAL_DATABASE_PASSWORD", "subscriptions_tracker_dev") %>
   host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
+  port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
