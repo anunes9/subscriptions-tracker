@@ -62,7 +62,7 @@ gem "rack-attack", "~> 6.8"
 
 gem "annotaterb", "~> 4.24", group: :development
 
-gem "resend", "~> 1.13"
+gem "resend", "~> 1.14"
 
 gem "letter_opener", "~> 1.10", group: :development
 
