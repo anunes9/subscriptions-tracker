@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   root "inertia_example#index"
   get "inertia-example", to: "inertia_example#index"
 
+  resources :categories, only: [ :index, :create, :update, :destroy ]
+
   get "login/passwordless", to: "passwordless_login_requests#new", as: :new_passwordless_login_request
   post "login/passwordless", to: "passwordless_login_requests#create", as: :passwordless_login_requests
   get "login/passwordless/verify", to: "passwordless_login_requests#show", as: :verify_passwordless_login_request

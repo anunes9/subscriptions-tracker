@@ -3,7 +3,7 @@ module ModelHelpers
     User.create!(email: email, password: "Password123!")
   end
 
-  def create_category(name: "Streaming & Entertainment", **attrs)
+  def create_category(name: "Streaming & Entertainment #{SecureRandom.hex(4)}", **attrs)
     Category.create!(name: name, **attrs)
   end
 

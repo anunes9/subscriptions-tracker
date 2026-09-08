@@ -25,5 +25,14 @@ class Category < ApplicationRecord
   has_many :subscriptions
   has_many :one_time_expenses
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
+
+  scope :presets, -> { where(is_preset: true) }
+  scope :visible_to, ->(user) { where(is_preset: true).or(where(user_id: user.id)) }
+
+  # The fallback preset custom categories get reassigned to on delete (see
+  # CategoriesController#destroy) — always present, seeded in db/seeds.rb.
+  def self.other_preset
+    presets.find_by!(name: "Other")
+  end
 end
