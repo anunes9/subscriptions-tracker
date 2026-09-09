@@ -15,18 +15,10 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  # Connect as a non-superuser role in every environment, matching production.
-  # Postgres superusers always bypass Row-Level Security regardless of policy —
-  # connecting as "root" locally would silently make RLS a no-op in dev/test.
-  # host+password (not the default local peer-auth socket) because peer auth
-  # requires the OS user and Postgres role to share a name.
-  username: subscriptions_tracker
-  password: <%= ENV.fetch("LOCAL_DATABASE_PASSWORD", "subscriptions_tracker_dev") %>
-  host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
-  port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV["DATABASE_URL"] %>
 
 # Solid Queue uses a second database role so its writes/locking stay isolated from
 # the app's primary tables, per the architecture doc. It's still the same Postgres
@@ -76,11 +68,7 @@ production:
   primary:
     <<: *default
     database: subscriptions_tracker_production
-    username: subscriptions_tracker
-    password: <%= ENV["SUBSCRIPTIONS_TRACKER_DATABASE_PASSWORD"] %>
   queue:
     <<: *default
     database: subscriptions_tracker_production_queue
-    username: subscriptions_tracker
-    password: <%= ENV["SUBSCRIPTIONS_TRACKER_DATABASE_PASSWORD"] %>
     migrations_paths: db/queue_migrate
