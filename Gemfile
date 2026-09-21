@@ -60,7 +60,7 @@ gem "omniauth-rails_csrf_protection", "~> 2.0"
 
 gem "rack-attack", "~> 6.8"
 
-gem "annotaterb", "~> 4.24", group: :development
+gem "annotaterb", "~> 4.25", group: :development
 
 gem "resend", "~> 1.13"
 
