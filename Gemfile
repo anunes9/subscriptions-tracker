@@ -70,7 +70,7 @@ gem "letter_opener_web", "~> 3.0", group: :development
 
 gem "solid_queue", "~> 1.7"
 
-gem "stripe", "~> 19.6"
+gem "stripe", "~> 20.0"
 
 # Loads .env in development/test so vars like DATABASE_HOST apply to any
 # bin/rails command, not just bin/dev (Foreman has its own built-in .env
