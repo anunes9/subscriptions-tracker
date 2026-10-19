@@ -52,7 +52,7 @@ end
 gem "rspec-rails", "~> 8.0", groups: [ :development, :test ]
 
 gem "vite_rails", "~> 3.11"
-gem "inertia_rails", "~> 3.22"
+gem "inertia_rails", "~> 3.23"
 
 gem "devise", "~> 5.0"
 gem "omniauth-google-oauth2", "~> 1.2"
